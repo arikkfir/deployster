@@ -1,0 +1,11 @@
+/.python3
+/docs
+/examples
+/.dockerignore
+/.gitignore
+/*.iml
+/*.md
+/*-sa*.json
+/LICENSE
+/src/__pycache__
+/tests/__pycache__
