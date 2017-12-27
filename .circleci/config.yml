@@ -5,9 +5,8 @@ jobs:
       - image: debian:stretch
     steps:
       - checkout
+      - setup_remote_docker
       - run:
-          name: Greeting
-          command: echo Hello, world.
-      - run:
-          name: Print the Current Time
-          command: date
+          name: Test
+          command: |
+            docker build --file ./Dockerfile.test --tag kfirz/deployster:test-${CIRCLE_SHA1:-0.0.0} .
