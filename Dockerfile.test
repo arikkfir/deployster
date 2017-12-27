@@ -9,7 +9,7 @@ WORKDIR /app/
 COPY requirements.txt .coveragerc /app/
 RUN pip3.6 --disable-pip-version-check --no-cache-dir install -r requirements.txt
 
-COPY .buildkite/run-tests.sh /app/
+COPY ./run-tests.sh /app/
 RUN chmod +x /app/run-tests.sh
 
 COPY .coveragerc /app/

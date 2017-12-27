@@ -10,3 +10,11 @@ jobs:
           name: Test
           command: |
             docker build --file ./Dockerfile.test --tag kfirz/deployster:test-${CIRCLE_SHA1:-0.0.0} .
+            docker run --env COVERALLS_REPO_TOKEN="${COVERALLS_REPO_TOKEN}" \
+                       --env CIRCLECI="${CIRCLECI}" \
+                       --env CIRCLE_BUILD_NUM="${CIRCLE_BUILD_NUM}" \
+                       --env CIRCLE_BRANCH="${CIRCLE_BRANCH}" \
+                       --env CI_PULL_REQUEST="${CI_PULL_REQUEST}" \
+                       --tty \
+                       kfirz/deployster:test-${CIRCLE_SHA1:-0.0.0} \
+                       $@
