@@ -279,8 +279,6 @@ workflows:
           context: org-global
       - build:
           context: org-global
-          requires:
-            - test
   release:
     jobs:
       - release:
