@@ -36,7 +36,7 @@ jobs:
             docker build --tag quay.io/kfirs/deployster-gcp-cloud-sql:${CIRCLE_SHA1} -f ./resources/Dockerfile.gcp_cloud_sql ./resources
             docker build --tag quay.io/kfirs/deployster-gcp-compute-ip-address:${CIRCLE_SHA1} -f ./resources/Dockerfile.gcp_compute_ip_address ./resources
             docker build --tag quay.io/kfirs/deployster-gcp-gke-cluster:${CIRCLE_SHA1} -f ./resources/Dockerfile.gcp_gke_cluster ./resources
-            docker build --tag quay.io/kfirs/deployster-gcp-iam-policy:${CIRCLE_SHA1} -f ./resources/Dockerfile.gcp.gcp_iam_service_account ./resources
+            docker build --tag quay.io/kfirs/deployster-gcp-iam-policy:${CIRCLE_SHA1} -f ./resources/Dockerfile.gcp_iam_service_account ./resources
             docker build --tag quay.io/kfirs/deployster-gcp-iam-service-account:${CIRCLE_SHA1} -f ./resources/Dockerfile.gcp_iam_policy ./resources
             docker build --tag quay.io/kfirs/deployster-gcp-project:${CIRCLE_SHA1} -f ./resources/Dockerfile.gcp_project ./resources
             docker build --tag quay.io/kfirs/deployster-k8s:${CIRCLE_SHA1} -f ./resources/Dockerfile.k8s ./resources
