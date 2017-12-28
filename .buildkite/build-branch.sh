@@ -7,7 +7,7 @@ set -e
 echo "+++ Updating FROM directives in Dockerfile(s)"
 for dockerfile in $(ls -X ./resources/Dockerfile.*); do
     echo "Updating FROM directive in '${dockerfile}'"
-    sed -i "s/^FROM \(quay.io\/kfirs\/deployster-[^:]\+\):.\+$/FROM \1:${BUILDKITE_COMMIT}/g" ${dockerfile}
+    sed -i "s/^FROM \(eu.gcr.io\/kfirs-gcr\/deployster-[^:]\+\):.\+$/FROM \1:${BUILDKITE_COMMIT}/g" ${dockerfile}
 done
 
 # build resource images
