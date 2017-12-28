@@ -198,10 +198,6 @@ workflows:
           context: org-global
           requires:
             - test
-      - push-sha:
-          context: org-global
-          requires:
-            - build
   release:
     jobs:
       - release:
