@@ -2,7 +2,7 @@ version: 2
 jobs:
   test:
     docker:
-      - image: docker:17.09.1-ce
+      - image: docker:17.12
     steps:
       - checkout
       - setup_remote_docker
@@ -22,7 +22,7 @@ jobs:
                        $@
   build:
     docker:
-      - image: docker:17.09.1-ce
+      - image: docker:17.12
     steps:
       - checkout
       - setup_remote_docker
@@ -115,7 +115,7 @@ jobs:
             wait
   release:
     docker:
-      - image: docker:17.09.1-ce
+      - image: docker:17.12
     steps:
       - checkout
       - setup_remote_docker
