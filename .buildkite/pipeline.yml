@@ -1,0 +1,5 @@
+steps:
+
+  - label: Test
+    command:
+      - printenv | sort
