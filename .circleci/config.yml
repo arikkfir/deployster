@@ -7,22 +7,98 @@ jobs:
       - checkout
       - setup_remote_docker
       - run:
+          name: Login to quay.io
+          command: |
+            echo "${QUAY_ACCESS_TOKEN}" | docker login -u="arikkfir+circleci" --password-stdin quay.io
+      - run:
           name: Test
           command: |
-            docker build --file ./Dockerfile.test --tag gcr.io/kfirz-gcr/deployster:test-${CIRCLE_SHA1:-0.0.0} .
+            docker build --file ./Dockerfile.test --tag quay.io/kfirs/deployster:test-${CIRCLE_SHA1} .
             docker run --env COVERALLS_REPO_TOKEN="${COVERALLS_REPO_TOKEN}" \
                        --env CIRCLECI="${CIRCLECI}" \
                        --env CIRCLE_BUILD_NUM="${CIRCLE_BUILD_NUM}" \
                        --env CIRCLE_BRANCH="${CIRCLE_BRANCH}" \
                        --env CI_PULL_REQUEST="${CI_PULL_REQUEST}" \
                        --tty \
-                       gcr.io/kfirz-gcr/deployster:test-${CIRCLE_SHA1:-0.0.0} \
+                       quay.io/kfirs/deployster:test-${CIRCLE_SHA1} \
                        $@
       - run:
-          name: Build resources
+          name: Update FROM directives in Dockerfile(s)
           command: |
-            echo Hello > World
+            for file in $(ls -X $(pwd)/resources/Dockerfile.*|grep -v ".local"); do
+                sed -i "s/^FROM \(quay.io\/kfirs\/deployster-[^:]\+\):.\+$/FROM \1:${CIRCLE_SHA1}/g" "${file}"
+            done
       - run:
-          name: Test sharing files
-          command: cat World
-
+          name: Build Docker images
+          command: |
+            docker build --tag quay.io/kfirs/deployster-dresource:${CIRCLE_SHA1} -f ./resources/Dockerfile.dresource ./resources
+            docker build --tag quay.io/kfirs/deployster-gcp:${CIRCLE_SHA1} -f ./resources/Dockerfile.gcp ./resources
+            docker build --tag quay.io/kfirs/deployster-gcp-cloud-sql:${CIRCLE_SHA1} -f ./resources/Dockerfile.gcp_cloud_sql ./resources
+            docker build --tag quay.io/kfirs/deployster-gcp-compute-ip-address:${CIRCLE_SHA1} -f ./resources/Dockerfile.gcp_compute_ip_address ./resources
+            docker build --tag quay.io/kfirs/deployster-gcp-gke-cluster:${CIRCLE_SHA1} -f ./resources/Dockerfile.gcp_gke_cluster ./resources
+            docker build --tag quay.io/kfirs/deployster-gcp-iam-policy:${CIRCLE_SHA1} -f ./resources/Dockerfile.gcp.gcp_iam_service_account ./resources
+            docker build --tag quay.io/kfirs/deployster-gcp-iam-service-account:${CIRCLE_SHA1} -f ./resources/Dockerfile.gcp_iam_policy ./resources
+            docker build --tag quay.io/kfirs/deployster-gcp-project:${CIRCLE_SHA1} -f ./resources/Dockerfile.gcp_project ./resources
+            docker build --tag quay.io/kfirs/deployster-k8s:${CIRCLE_SHA1} -f ./resources/Dockerfile.k8s ./resources
+            docker build --tag quay.io/kfirs/deployster:${CIRCLE_SHA1} -f ./Dockerfile .
+            docker tag quay.io/kfirs/deployster-k8s:${CIRCLE_SHA1} quay.io/kfirs/deployster-k8s-clusterrole:${CIRCLE_SHA1}
+            docker tag quay.io/kfirs/deployster-k8s:${CIRCLE_SHA1} quay.io/kfirs/deployster-k8s-clusterrolebinding:${CIRCLE_SHA1}
+            docker tag quay.io/kfirs/deployster-k8s:${CIRCLE_SHA1} quay.io/kfirs/deployster-k8s-configmap:${CIRCLE_SHA1}
+            docker tag quay.io/kfirs/deployster-k8s:${CIRCLE_SHA1} quay.io/kfirs/deployster-k8s-cronjob:${CIRCLE_SHA1}
+            docker tag quay.io/kfirs/deployster-k8s:${CIRCLE_SHA1} quay.io/kfirs/deployster-k8s-daemonset:${CIRCLE_SHA1}
+            docker tag quay.io/kfirs/deployster-k8s:${CIRCLE_SHA1} quay.io/kfirs/deployster-k8s-deployment:${CIRCLE_SHA1}
+            docker tag quay.io/kfirs/deployster-k8s:${CIRCLE_SHA1} quay.io/kfirs/deployster-k8s-horizontalpodautoscaler:${CIRCLE_SHA1}
+            docker tag quay.io/kfirs/deployster-k8s:${CIRCLE_SHA1} quay.io/kfirs/deployster-k8s-ingress:${CIRCLE_SHA1}
+            docker tag quay.io/kfirs/deployster-k8s:${CIRCLE_SHA1} quay.io/kfirs/deployster-k8s-job:${CIRCLE_SHA1}
+            docker tag quay.io/kfirs/deployster-k8s:${CIRCLE_SHA1} quay.io/kfirs/deployster-k8s-namespace:${CIRCLE_SHA1}
+            docker tag quay.io/kfirs/deployster-k8s:${CIRCLE_SHA1} quay.io/kfirs/deployster-k8s-networkpolicy:${CIRCLE_SHA1}
+            docker tag quay.io/kfirs/deployster-k8s:${CIRCLE_SHA1} quay.io/kfirs/deployster-k8s-node:${CIRCLE_SHA1}
+            docker tag quay.io/kfirs/deployster-k8s:${CIRCLE_SHA1} quay.io/kfirs/deployster-k8s-persistentvolume:${CIRCLE_SHA1}
+            docker tag quay.io/kfirs/deployster-k8s:${CIRCLE_SHA1} quay.io/kfirs/deployster-k8s-persistentvolumeclaim:${CIRCLE_SHA1}
+            docker tag quay.io/kfirs/deployster-k8s:${CIRCLE_SHA1} quay.io/kfirs/deployster-k8s-pod:${CIRCLE_SHA1}
+            docker tag quay.io/kfirs/deployster-k8s:${CIRCLE_SHA1} quay.io/kfirs/deployster-k8s-replicaset:${CIRCLE_SHA1}
+            docker tag quay.io/kfirs/deployster-k8s:${CIRCLE_SHA1} quay.io/kfirs/deployster-k8s-replicationcontroller:${CIRCLE_SHA1}
+            docker tag quay.io/kfirs/deployster-k8s:${CIRCLE_SHA1} quay.io/kfirs/deployster-k8s-role:${CIRCLE_SHA1}
+            docker tag quay.io/kfirs/deployster-k8s:${CIRCLE_SHA1} quay.io/kfirs/deployster-k8s-rolebinding:${CIRCLE_SHA1}
+            docker tag quay.io/kfirs/deployster-k8s:${CIRCLE_SHA1} quay.io/kfirs/deployster-k8s-secret:${CIRCLE_SHA1}
+            docker tag quay.io/kfirs/deployster-k8s:${CIRCLE_SHA1} quay.io/kfirs/deployster-k8s-service:${CIRCLE_SHA1}
+            docker tag quay.io/kfirs/deployster-k8s:${CIRCLE_SHA1} quay.io/kfirs/deployster-k8s-serviceaccount:${CIRCLE_SHA1}
+            docker tag quay.io/kfirs/deployster-k8s:${CIRCLE_SHA1} quay.io/kfirs/deployster-k8s-statefulset:${CIRCLE_SHA1}
+            docker tag quay.io/kfirs/deployster-k8s:${CIRCLE_SHA1} quay.io/kfirs/deployster-k8s-storageclass:${CIRCLE_SHA1}
+      - run:
+          name: Push Docker images
+          command: |
+            docker push quay.io/kfirs/deployster-dresource:${CIRCLE_SHA1}
+            docker push quay.io/kfirs/deployster-gcp:${CIRCLE_SHA1}
+            docker push quay.io/kfirs/deployster-gcp-cloud-sql:${CIRCLE_SHA1}
+            docker push quay.io/kfirs/deployster-gcp-compute-ip-address:${CIRCLE_SHA1}
+            docker push quay.io/kfirs/deployster-gcp-gke-cluster:${CIRCLE_SHA1}
+            docker push quay.io/kfirs/deployster-gcp-iam-policy:${CIRCLE_SHA1}
+            docker push quay.io/kfirs/deployster-gcp-iam-service-account:${CIRCLE_SHA1}
+            docker push quay.io/kfirs/deployster-gcp-project:${CIRCLE_SHA1}
+            docker push quay.io/kfirs/deployster-k8s:${CIRCLE_SHA1}
+            docker push quay.io/kfirs/deployster-k8s-clusterrole:${CIRCLE_SHA1}
+            docker push quay.io/kfirs/deployster-k8s-clusterrolebinding:${CIRCLE_SHA1}
+            docker push quay.io/kfirs/deployster-k8s-configmap:${CIRCLE_SHA1}
+            docker push quay.io/kfirs/deployster-k8s-cronjob:${CIRCLE_SHA1}
+            docker push quay.io/kfirs/deployster-k8s-daemonset:${CIRCLE_SHA1}
+            docker push quay.io/kfirs/deployster-k8s-deployment:${CIRCLE_SHA1}
+            docker push quay.io/kfirs/deployster-k8s-horizontalpodautoscaler:${CIRCLE_SHA1}
+            docker push quay.io/kfirs/deployster-k8s-ingress:${CIRCLE_SHA1}
+            docker push quay.io/kfirs/deployster-k8s-job:${CIRCLE_SHA1}
+            docker push quay.io/kfirs/deployster-k8s-namespace:${CIRCLE_SHA1}
+            docker push quay.io/kfirs/deployster-k8s-networkpolicy:${CIRCLE_SHA1}
+            docker push quay.io/kfirs/deployster-k8s-node:${CIRCLE_SHA1}
+            docker push quay.io/kfirs/deployster-k8s-persistentvolume:${CIRCLE_SHA1}
+            docker push quay.io/kfirs/deployster-k8s-persistentvolumeclaim:${CIRCLE_SHA1}
+            docker push quay.io/kfirs/deployster-k8s-pod:${CIRCLE_SHA1}
+            docker push quay.io/kfirs/deployster-k8s-replicaset:${CIRCLE_SHA1}
+            docker push quay.io/kfirs/deployster-k8s-replicationcontroller:${CIRCLE_SHA1}
+            docker push quay.io/kfirs/deployster-k8s-role:${CIRCLE_SHA1}
+            docker push quay.io/kfirs/deployster-k8s-rolebinding:${CIRCLE_SHA1}
+            docker push quay.io/kfirs/deployster-k8s-secret:${CIRCLE_SHA1}
+            docker push quay.io/kfirs/deployster-k8s-service:${CIRCLE_SHA1}
+            docker push quay.io/kfirs/deployster-k8s-serviceaccount:${CIRCLE_SHA1}
+            docker push quay.io/kfirs/deployster-k8s-statefulset:${CIRCLE_SHA1}
+            docker push quay.io/kfirs/deployster-k8s-storageclass:${CIRCLE_SHA1}
+            docker push quay.io/kfirs/deployster:${CIRCLE_SHA1}

@@ -1,4 +1,4 @@
-FROM kfirz/deployster-dresource:local
+FROM quay.io/kfirs/deployster-dresource:local
 RUN yum install -y kubectl && yum clean all && rm -rf /var/cache/yum
 COPY src/dresources_util.py src/dresources.py src/external_services.py /deployster/lib/
 COPY src/k8s*.py /deployster/lib/
