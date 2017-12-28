@@ -198,10 +198,11 @@ workflows:
   test_and_build:
     jobs:
       - test
-      - build
-      - push-sha:
+      - build:
           requires:
             - test
+      - push-sha:
+          requires:
             - build
   release:
     jobs:
