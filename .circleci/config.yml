@@ -197,16 +197,20 @@ workflows:
   version: 2
   test_and_build:
     jobs:
-      - test
+      - test:
+          context: org-global
       - build:
+          context: org-global
           requires:
             - test
       - push-sha:
+          context: org-global
           requires:
             - build
   release:
     jobs:
       - release:
+          context: org-global
           filters:
             tags:
               only: /^\d+\.\d+\.\d+$/
