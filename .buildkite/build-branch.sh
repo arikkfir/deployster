@@ -6,6 +6,7 @@ set -e
 # process Dockerfile files and replace ":local" in "FROM" clauses with actual tag
 echo "+++ Updating FROM directives in Dockerfile(s)"
 for dockerfile in $(ls -X ./resources/Dockerfile.*); do
+    echo "Updating FROM directive in '${dockerfile}'"
     sed -i "s/^FROM \(quay.io\/kfirs\/deployster-[^:]\+\):.\+$/FROM \1:${BUILDKITE_COMMIT}/g" ${dockerfile}
 done
 
