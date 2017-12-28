@@ -128,39 +128,40 @@ jobs:
       - run:
           name: Pull SHA Docker images
           command: |
-            docker pull quay.io/kfirs/deployster-dresource:${CIRCLE_SHA1}
-            docker pull quay.io/kfirs/deployster-gcp:${CIRCLE_SHA1}
-            docker pull quay.io/kfirs/deployster-gcp-cloud-sql:${CIRCLE_SHA1}
-            docker pull quay.io/kfirs/deployster-gcp-compute-ip-address:${CIRCLE_SHA1}
-            docker pull quay.io/kfirs/deployster-gcp-gke-cluster:${CIRCLE_SHA1}
-            docker pull quay.io/kfirs/deployster-gcp-iam-policy:${CIRCLE_SHA1}
-            docker pull quay.io/kfirs/deployster-gcp-iam-service-account:${CIRCLE_SHA1}
-            docker pull quay.io/kfirs/deployster-gcp-project:${CIRCLE_SHA1}
-            docker pull quay.io/kfirs/deployster-k8s:${CIRCLE_SHA1}
-            docker pull quay.io/kfirs/deployster-k8s-clusterrole:${CIRCLE_SHA1}
-            docker pull quay.io/kfirs/deployster-k8s-clusterrolebinding:${CIRCLE_SHA1}
-            docker pull quay.io/kfirs/deployster-k8s-configmap:${CIRCLE_SHA1}
-            docker pull quay.io/kfirs/deployster-k8s-cronjob:${CIRCLE_SHA1}
-            docker pull quay.io/kfirs/deployster-k8s-daemonset:${CIRCLE_SHA1}
-            docker pull quay.io/kfirs/deployster-k8s-deployment:${CIRCLE_SHA1}
-            docker pull quay.io/kfirs/deployster-k8s-horizontalpodautoscaler:${CIRCLE_SHA1}
-            docker pull quay.io/kfirs/deployster-k8s-ingress:${CIRCLE_SHA1}
-            docker pull quay.io/kfirs/deployster-k8s-job:${CIRCLE_SHA1}
-            docker pull quay.io/kfirs/deployster-k8s-namespace:${CIRCLE_SHA1}
-            docker pull quay.io/kfirs/deployster-k8s-networkpolicy:${CIRCLE_SHA1}
-            docker pull quay.io/kfirs/deployster-k8s-node:${CIRCLE_SHA1}
-            docker pull quay.io/kfirs/deployster-k8s-persistentvolume:${CIRCLE_SHA1}
-            docker pull quay.io/kfirs/deployster-k8s-persistentvolumeclaim:${CIRCLE_SHA1}
-            docker pull quay.io/kfirs/deployster-k8s-pod:${CIRCLE_SHA1}
-            docker pull quay.io/kfirs/deployster-k8s-replicaset:${CIRCLE_SHA1}
-            docker pull quay.io/kfirs/deployster-k8s-replicationcontroller:${CIRCLE_SHA1}
-            docker pull quay.io/kfirs/deployster-k8s-role:${CIRCLE_SHA1}
-            docker pull quay.io/kfirs/deployster-k8s-rolebinding:${CIRCLE_SHA1}
-            docker pull quay.io/kfirs/deployster-k8s-secret:${CIRCLE_SHA1}
-            docker pull quay.io/kfirs/deployster-k8s-service:${CIRCLE_SHA1}
-            docker pull quay.io/kfirs/deployster-k8s-serviceaccount:${CIRCLE_SHA1}
-            docker pull quay.io/kfirs/deployster-k8s-statefulset:${CIRCLE_SHA1}
-            docker pull quay.io/kfirs/deployster-k8s-storageclass:${CIRCLE_SHA1}
+            docker pull quay.io/kfirs/deployster-dresource:${CIRCLE_SHA1} &
+            docker pull quay.io/kfirs/deployster-gcp:${CIRCLE_SHA1} &
+            docker pull quay.io/kfirs/deployster-gcp-cloud-sql:${CIRCLE_SHA1} &
+            docker pull quay.io/kfirs/deployster-gcp-compute-ip-address:${CIRCLE_SHA1} &
+            docker pull quay.io/kfirs/deployster-gcp-gke-cluster:${CIRCLE_SHA1} &
+            docker pull quay.io/kfirs/deployster-gcp-iam-policy:${CIRCLE_SHA1} &
+            docker pull quay.io/kfirs/deployster-gcp-iam-service-account:${CIRCLE_SHA1} &
+            docker pull quay.io/kfirs/deployster-gcp-project:${CIRCLE_SHA1} &
+            docker pull quay.io/kfirs/deployster-k8s:${CIRCLE_SHA1} &
+            docker pull quay.io/kfirs/deployster-k8s-clusterrole:${CIRCLE_SHA1} &
+            docker pull quay.io/kfirs/deployster-k8s-clusterrolebinding:${CIRCLE_SHA1} &
+            docker pull quay.io/kfirs/deployster-k8s-configmap:${CIRCLE_SHA1} &
+            docker pull quay.io/kfirs/deployster-k8s-cronjob:${CIRCLE_SHA1} &
+            docker pull quay.io/kfirs/deployster-k8s-daemonset:${CIRCLE_SHA1} &
+            docker pull quay.io/kfirs/deployster-k8s-deployment:${CIRCLE_SHA1} &
+            docker pull quay.io/kfirs/deployster-k8s-horizontalpodautoscaler:${CIRCLE_SHA1} &
+            docker pull quay.io/kfirs/deployster-k8s-ingress:${CIRCLE_SHA1} &
+            docker pull quay.io/kfirs/deployster-k8s-job:${CIRCLE_SHA1} &
+            docker pull quay.io/kfirs/deployster-k8s-namespace:${CIRCLE_SHA1} &
+            docker pull quay.io/kfirs/deployster-k8s-networkpolicy:${CIRCLE_SHA1} &
+            docker pull quay.io/kfirs/deployster-k8s-node:${CIRCLE_SHA1} &
+            docker pull quay.io/kfirs/deployster-k8s-persistentvolume:${CIRCLE_SHA1} &
+            docker pull quay.io/kfirs/deployster-k8s-persistentvolumeclaim:${CIRCLE_SHA1} &
+            docker pull quay.io/kfirs/deployster-k8s-pod:${CIRCLE_SHA1} &
+            docker pull quay.io/kfirs/deployster-k8s-replicaset:${CIRCLE_SHA1} &
+            docker pull quay.io/kfirs/deployster-k8s-replicationcontroller:${CIRCLE_SHA1} &
+            docker pull quay.io/kfirs/deployster-k8s-role:${CIRCLE_SHA1} &
+            docker pull quay.io/kfirs/deployster-k8s-rolebinding:${CIRCLE_SHA1} &
+            docker pull quay.io/kfirs/deployster-k8s-secret:${CIRCLE_SHA1} &
+            docker pull quay.io/kfirs/deployster-k8s-service:${CIRCLE_SHA1} &
+            docker pull quay.io/kfirs/deployster-k8s-serviceaccount:${CIRCLE_SHA1} &
+            docker pull quay.io/kfirs/deployster-k8s-statefulset:${CIRCLE_SHA1} &
+            docker pull quay.io/kfirs/deployster-k8s-storageclass:${CIRCLE_SHA1} &
+            wait
       - run:
           name: Build versioned Docker images
           command: |
