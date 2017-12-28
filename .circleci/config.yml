@@ -117,6 +117,7 @@ jobs:
     docker:
       - image: docker:17.09.1-ce
     steps:
+      - checkout
       - setup_remote_docker
 #      - setup_remote_docker:
 #          docker_layer_caching: true
