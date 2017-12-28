@@ -25,13 +25,17 @@ jobs:
       - checkout
       - setup_remote_docker
       - run:
+          name: Login to quay.io
+          command: |
+            echo "${QUAY_ACCESS_TOKEN}" | docker login -u="kfirs+circleci" --password-stdin quay.io
+      - run:
           name: Update FROM directives in Dockerfile(s)
           command: |
             for file in $(ls -X $(pwd)/resources/Dockerfile.*|grep -v ".local"); do
                 sed -i "s/^FROM \(quay.io\/kfirs\/deployster-[^:]\+\):.\+$/FROM \1:${CIRCLE_SHA1}/g" "${file}"
             done
       - run:
-          name: Build Docker images
+          name: Build Docker images (commit SHA)
           command: |
             docker build -q --tag quay.io/kfirs/deployster-dresource:${CIRCLE_SHA1} -f ./resources/Dockerfile.dresource ./resources
             docker build -q --tag quay.io/kfirs/deployster-gcp:${CIRCLE_SHA1} -f ./resources/Dockerfile.gcp ./resources
@@ -67,17 +71,8 @@ jobs:
             docker tag quay.io/kfirs/deployster-k8s:${CIRCLE_SHA1} quay.io/kfirs/deployster-k8s-serviceaccount:${CIRCLE_SHA1}
             docker tag quay.io/kfirs/deployster-k8s:${CIRCLE_SHA1} quay.io/kfirs/deployster-k8s-statefulset:${CIRCLE_SHA1}
             docker tag quay.io/kfirs/deployster-k8s:${CIRCLE_SHA1} quay.io/kfirs/deployster-k8s-storageclass:${CIRCLE_SHA1}
-  push-sha:
-    docker:
-      - image: docker:17.09.1-ce
-    steps:
-      - setup_remote_docker
       - run:
-          name: Login to quay.io
-          command: |
-            echo "${QUAY_ACCESS_TOKEN}" | docker login -u="kfirs+circleci" --password-stdin quay.io
-      - run:
-          name: Push Docker images
+          name: Push Docker images (commit SHA)
           command: |
             docker push quay.io/kfirs/deployster-dresource:${CIRCLE_SHA1}
             docker push quay.io/kfirs/deployster-gcp:${CIRCLE_SHA1}
