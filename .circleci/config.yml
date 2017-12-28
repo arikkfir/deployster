@@ -9,7 +9,7 @@ jobs:
       - run:
           name: Login to quay.io
           command: |
-            echo "${QUAY_ACCESS_TOKEN}" | docker login -u="arikkfir+circleci" --password-stdin quay.io
+            echo "${QUAY_ACCESS_TOKEN}" | docker login -u="kfirs+circleci" --password-stdin quay.io
       - run:
           name: Test
           command: |
