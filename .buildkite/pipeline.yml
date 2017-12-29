@@ -1,0 +1,9 @@
+steps:
+
+  - label: Test
+    command:
+      - ./.buildkite/test.sh
+
+  - label: Build
+    command:
+      - ./.buildkite/build.sh

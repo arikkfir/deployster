@@ -1,4 +1,4 @@
-FROM quay.io/kfirs/deployster-gcp:local
+FROM eu.gcr.io/kfirs-gcr/deployster-gcp:local
 RUN curl -sSL -o "/usr/local/bin/cloud_sql_proxy" "https://dl.google.com/cloudsql/cloud_sql_proxy.linux.amd64" && \
     chmod +x /usr/local/bin/cloud_sql_proxy && \
     yum install -y mariadb && yum clean all && rm -rf /var/cache/yum && \

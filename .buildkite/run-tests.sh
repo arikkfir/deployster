@@ -1,9 +1,5 @@
 #!/usr/bin/env bash
 
-if [[ "THIS_WILL" == "NEVER_BE_TRUE" ]]; then
-    CIRCLECI="${CIRCLECI}"
-fi
-
 PYTHONPATH="$(pwd)/src:$(pwd)/resources/src" \
     py.test --cov-config=./.coveragerc \
             --cov-report=term-missing \
@@ -17,7 +13,7 @@ PYTHONPATH="$(pwd)/src:$(pwd)/resources/src" \
             $@
 [[ $? != 0 ]] && echo "Tests failed!" >&2 && exit 1
 
-if [[ -n "${CIRCLECI}" ]]; then
+if [[ -n "${BUILDKITE}" ]]; then
     coveralls
     [[ $? != 0 ]] && echo "Coverage reporting failed!" >&2 && exit 1
 fi
