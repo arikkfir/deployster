@@ -61,7 +61,7 @@ docker tag ${REPOSITORY}/deployster-k8s:${TAG} ${REPOSITORY}/deployster-k8s-stor
 
 # create k8s docker image aliases
 if [[ "${PUSH}" == "1" ]]; then
-    echo "+++ Pushing resource images to repository"
+    echo "--- Pushing resource images to repository"
     docker push ${REPOSITORY}/deployster-dresource:${TAG}
     docker push ${REPOSITORY}/deployster-gcp:${TAG}
     docker push ${REPOSITORY}/deployster-gcp-cloud-sql:${TAG}
@@ -96,7 +96,7 @@ if [[ "${PUSH}" == "1" ]]; then
     docker push ${REPOSITORY}/deployster-k8s-statefulset:${TAG}
     docker push ${REPOSITORY}/deployster-k8s-storageclass:${TAG}
 
-    echo "+++ Pushing main Deployster image to repository"
+    echo "--- Pushing main Deployster image to repository"
     docker push ${REPOSITORY}/deployster:${TAG}
 fi
 
