@@ -2,7 +2,7 @@
 
 set -e
 
-echo "+++ Building test image"
+echo "--- Building test image"
 docker build --file ./Dockerfile.test --tag infolinks/deployster:test-${BUILDKITE_COMMIT:-0.0.0} .
 
 echo "+++ Running tests"
