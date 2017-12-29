@@ -10,7 +10,7 @@ for dockerfile in $(ls -X ./resources/Dockerfile.*); do
     sed -i "s/^FROM \(eu.gcr.io\/kfirs-gcr\/deployster-[^:]\+\):.\+$/FROM \1:${BUILDKITE_COMMIT}/g" ${dockerfile}
 done
 
-# build resource images
+# build images
 echo "+++ Building resource images"
 docker build --tag eu.gcr.io/kfirs-gcr/deployster-dresource:${BUILDKITE_COMMIT} -f ./resources/Dockerfile.dresource ./resources
 docker build --tag eu.gcr.io/kfirs-gcr/deployster-gcp:${BUILDKITE_COMMIT} -f ./resources/Dockerfile.gcp ./resources
