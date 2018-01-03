@@ -4,7 +4,9 @@ set -euo pipefail
 
 RELEASE_AND_SHA="${RELEASE}-${BUILDKITE_COMMIT}"
 
-echo "+++ Generating pipeline" >> ./.buildkite/pipeline.yml
+echo "+++ Generating pipeline"
+echo "" > ./.buildkite/pipeline.yml
+
 echo "env:" >> ./.buildkite/pipeline.yml
 echo "  RELEASE: ${RELEASE}" >> ./.buildkite/pipeline.yml
 echo "steps:" >> ./.buildkite/pipeline.yml
