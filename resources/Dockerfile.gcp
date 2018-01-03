@@ -1,3 +1,3 @@
-FROM eu.gcr.io/kfirs-gcr/deployster-dresource:local
+FROM kfirz/deployster-dresource:local
 ENV GOOGLE_APPLICATION_CREDENTIALS=/deployster/service-account.json
 COPY src/gcp.py /deployster/lib/
