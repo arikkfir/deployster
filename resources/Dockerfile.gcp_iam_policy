@@ -1,4 +1,5 @@
-FROM eu.gcr.io/kfirs-gcr/deployster-gcp:local
+ARG VERSION
+FROM kfirz/deployster-gcp:${VERSION}
 COPY src/dresources_util.py src/dresources.py src/external_services.py /deployster/lib/
 COPY src/gcp_iam_policy.py /deployster/lib/
 RUN chmod +x /deployster/lib/gcp_iam_policy.py
