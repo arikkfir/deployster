@@ -30,9 +30,10 @@ for name in "gcp-cloud-sql" "gcp-compute-ip-address" "gcp-gke-cluster" "gcp-iam-
     echo "  - label: Build 'kfirz/deployster-${name}:${RELEASE_AND_SHA}'" >> ./.buildkite/pipeline.yml
     echo "    command: docker build --build-arg \"VERSION=${RELEASE_AND_SHA}\" -t kfirz/deployster-${name}:${RELEASE_AND_SHA} -f ./resources/Dockerfile.${name} ./resources" >> ./.buildkite/pipeline.yml
 done
+echo "  - label: Re-tagging 'kfirz/deployster-k8s:${RELEASE_AND_SHA}' as specific Kubernetes resource images" >> ./.buildkite/pipeline.yml
+echo "    command:" >> ./.buildkite/pipeline.yml
 for name in "clusterrole" "clusterrolebinding" "configmap" "cronjob" "daemonset" "deployment" "horizontalpodautoscaler" "ingress" "job" "namespace" "networkpolicy" "node" "persistentvolume" "persistentvolumeclaim" "pod" "replicaset" "replicationcontroller" "role" "rolebinding" "secret" "service" "serviceaccount" "statefulset" "storageclass"; do
-    echo "  - label: Build 'kfirz/deployster-k8s-${name}:${RELEASE_AND_SHA}'" >> ./.buildkite/pipeline.yml
-    echo "    command: docker tag kfirz/deployster-k8s:${RELEASE_AND_SHA} kfirz/deployster-k8s-${name}:${RELEASE_AND_SHA}" >> ./.buildkite/pipeline.yml
+    echo "      - docker tag kfirz/deployster-k8s:${RELEASE_AND_SHA} kfirz/deployster-k8s-${name}:${RELEASE_AND_SHA}" >> ./.buildkite/pipeline.yml
 done
 
 echo "  - wait" >> ./.buildkite/pipeline.yml
