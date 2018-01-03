@@ -108,7 +108,8 @@ class K8sResource(DResource):
 
     @action
     def create(self, args) -> None:
-        if args: pass
+        if args:
+            pass
         start_ms: int = int(round(time.time() * 1000))
         self.svc.create_k8s_object(self.build_kubectl_manifest(), self.timeout_ms, self.info.verbose)
         finish_ms: int = int(round(time.time() * 1000))
@@ -121,7 +122,8 @@ class K8sResource(DResource):
 
     @action
     def update(self, args) -> None:
-        if args: pass
+        if args:
+            pass
         start_ms: int = int(round(time.time() * 1000))
         self.svc.update_k8s_object(self.build_kubectl_manifest(), self.timeout_ms, self.info.verbose)
         finish_ms: int = int(round(time.time() * 1000))
