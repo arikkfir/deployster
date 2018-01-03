@@ -9,79 +9,36 @@ fi
 
 RELEASE_AND_SHA="${RELEASE}-${BUILDKITE_COMMIT}"
 
-echo "--- Login to Docker Hub"
-cat ${DOCKERHUB_PASSWORD_FILE} | docker login -u ${DOCKERHUB_USERNAME} --password-stdin
+function retag_resource() {
+    echo "docker tag kfirz/deployster-${1}:${RELEASE_AND_SHA} kfirz/deployster-${1}:${RELEASE}"
+}
 
-echo "--- Re-tagging resource images tagged as '${RELEASE_AND_SHA}' with '${RELEASE}'"
-docker tag kfirz/deployster-dresource:${RELEASE_AND_SHA} kfirz/deployster-dresource:${RELEASE}
-docker tag kfirz/deployster-gcp:${RELEASE_AND_SHA} kfirz/deployster-gcp:${RELEASE}
-docker tag kfirz/deployster-gcp-cloud-sql:${RELEASE_AND_SHA} kfirz/deployster-gcp-cloud-sql:${RELEASE}
-docker tag kfirz/deployster-gcp-compute-ip-address:${RELEASE_AND_SHA} kfirz/deployster-gcp-compute-ip-address:${RELEASE}
-docker tag kfirz/deployster-gcp-gke-cluster:${RELEASE_AND_SHA} kfirz/deployster-gcp-gke-cluster:${RELEASE}
-docker tag kfirz/deployster-gcp-iam-policy:${RELEASE_AND_SHA} kfirz/deployster-gcp-iam-policy:${RELEASE}
-docker tag kfirz/deployster-gcp-iam-service-account:${RELEASE_AND_SHA} kfirz/deployster-gcp-iam-service-account:${RELEASE}
-docker tag kfirz/deployster-gcp-project:${RELEASE_AND_SHA} kfirz/deployster-gcp-project:${RELEASE}
-docker tag kfirz/deployster-k8s:${RELEASE_AND_SHA} kfirz/deployster-k8s:${RELEASE}
-docker tag kfirz/deployster-k8s-clusterrole:${RELEASE_AND_SHA} kfirz/deployster-k8s-clusterrole:${RELEASE}
-docker tag kfirz/deployster-k8s-clusterrolebinding:${RELEASE_AND_SHA} kfirz/deployster-k8s-clusterrolebinding:${RELEASE}
-docker tag kfirz/deployster-k8s-configmap:${RELEASE_AND_SHA} kfirz/deployster-k8s-configmap:${RELEASE}
-docker tag kfirz/deployster-k8s-cronjob:${RELEASE_AND_SHA} kfirz/deployster-k8s-cronjob:${RELEASE}
-docker tag kfirz/deployster-k8s-daemonset:${RELEASE_AND_SHA} kfirz/deployster-k8s-daemonset:${RELEASE}
-docker tag kfirz/deployster-k8s-deployment:${RELEASE_AND_SHA} kfirz/deployster-k8s-deployment:${RELEASE}
-docker tag kfirz/deployster-k8s-horizontalpodautoscaler:${RELEASE_AND_SHA} kfirz/deployster-k8s-horizontalpodautoscaler:${RELEASE}
-docker tag kfirz/deployster-k8s-ingress:${RELEASE_AND_SHA} kfirz/deployster-k8s-ingress:${RELEASE}
-docker tag kfirz/deployster-k8s-job:${RELEASE_AND_SHA} kfirz/deployster-k8s-job:${RELEASE}
-docker tag kfirz/deployster-k8s-namespace:${RELEASE_AND_SHA} kfirz/deployster-k8s-namespace:${RELEASE}
-docker tag kfirz/deployster-k8s-networkpolicy:${RELEASE_AND_SHA} kfirz/deployster-k8s-networkpolicy:${RELEASE}
-docker tag kfirz/deployster-k8s-node:${RELEASE_AND_SHA} kfirz/deployster-k8s-node:${RELEASE}
-docker tag kfirz/deployster-k8s-persistentvolume:${RELEASE_AND_SHA} kfirz/deployster-k8s-persistentvolume:${RELEASE}
-docker tag kfirz/deployster-k8s-persistentvolumeclaim:${RELEASE_AND_SHA} kfirz/deployster-k8s-persistentvolumeclaim:${RELEASE}
-docker tag kfirz/deployster-k8s-pod:${RELEASE_AND_SHA} kfirz/deployster-k8s-pod:${RELEASE}
-docker tag kfirz/deployster-k8s-replicaset:${RELEASE_AND_SHA} kfirz/deployster-k8s-replicaset:${RELEASE}
-docker tag kfirz/deployster-k8s-replicationcontroller:${RELEASE_AND_SHA} kfirz/deployster-k8s-replicationcontroller:${RELEASE}
-docker tag kfirz/deployster-k8s-role:${RELEASE_AND_SHA} kfirz/deployster-k8s-role:${RELEASE}
-docker tag kfirz/deployster-k8s-rolebinding:${RELEASE_AND_SHA} kfirz/deployster-k8s-rolebinding:${RELEASE}
-docker tag kfirz/deployster-k8s-secret:${RELEASE_AND_SHA} kfirz/deployster-k8s-secret:${RELEASE}
-docker tag kfirz/deployster-k8s-service:${RELEASE_AND_SHA} kfirz/deployster-k8s-service:${RELEASE}
-docker tag kfirz/deployster-k8s-serviceaccount:${RELEASE_AND_SHA} kfirz/deployster-k8s-serviceaccount:${RELEASE}
-docker tag kfirz/deployster-k8s-statefulset:${RELEASE_AND_SHA} kfirz/deployster-k8s-statefulset:${RELEASE}
-docker tag kfirz/deployster-k8s-storageclass:${RELEASE_AND_SHA} kfirz/deployster-k8s-storageclass:${RELEASE}
-docker tag kfirz/deployster:${RELEASE_AND_SHA} kfirz/deployster:${RELEASE}
+function push_resource() {
+    echo "docker push kfirz/deployster-${1}:${RELEASE}"
+}
 
-echo "--- Pushing images"
-docker push kfirz/deployster-dresource:${RELEASE}
-docker push kfirz/deployster-gcp:${RELEASE}
-docker push kfirz/deployster-gcp-cloud-sql:${RELEASE}
-docker push kfirz/deployster-gcp-compute-ip-address:${RELEASE}
-docker push kfirz/deployster-gcp-gke-cluster:${RELEASE}
-docker push kfirz/deployster-gcp-iam-policy:${RELEASE}
-docker push kfirz/deployster-gcp-iam-service-account:${RELEASE}
-docker push kfirz/deployster-gcp-project:${RELEASE}
-docker push kfirz/deployster-k8s:${RELEASE}
-docker push kfirz/deployster-k8s-clusterrole:${RELEASE}
-docker push kfirz/deployster-k8s-clusterrolebinding:${RELEASE}
-docker push kfirz/deployster-k8s-configmap:${RELEASE}
-docker push kfirz/deployster-k8s-cronjob:${RELEASE}
-docker push kfirz/deployster-k8s-daemonset:${RELEASE}
-docker push kfirz/deployster-k8s-deployment:${RELEASE}
-docker push kfirz/deployster-k8s-horizontalpodautoscaler:${RELEASE}
-docker push kfirz/deployster-k8s-ingress:${RELEASE}
-docker push kfirz/deployster-k8s-job:${RELEASE}
-docker push kfirz/deployster-k8s-namespace:${RELEASE}
-docker push kfirz/deployster-k8s-networkpolicy:${RELEASE}
-docker push kfirz/deployster-k8s-node:${RELEASE}
-docker push kfirz/deployster-k8s-persistentvolume:${RELEASE}
-docker push kfirz/deployster-k8s-persistentvolumeclaim:${RELEASE}
-docker push kfirz/deployster-k8s-pod:${RELEASE}
-docker push kfirz/deployster-k8s-replicaset:${RELEASE}
-docker push kfirz/deployster-k8s-replicationcontroller:${RELEASE}
-docker push kfirz/deployster-k8s-role:${RELEASE}
-docker push kfirz/deployster-k8s-rolebinding:${RELEASE}
-docker push kfirz/deployster-k8s-secret:${RELEASE}
-docker push kfirz/deployster-k8s-service:${RELEASE}
-docker push kfirz/deployster-k8s-serviceaccount:${RELEASE}
-docker push kfirz/deployster-k8s-statefulset:${RELEASE}
-docker push kfirz/deployster-k8s-storageclass:${RELEASE}
-docker push kfirz/deployster:${RELEASE}
+echo "+++ Generating pipeline"
+echo "" > ./.buildkite/pipeline.yml
+echo "steps:" >> ./.buildkite/pipeline.yml
+
+echo "  - label: Re-tag resource images tagged as '${RELEASE_AND_SHA}' with '${RELEASE}'" >> ./.buildkite/pipeline.yml
+echo "    command:" >> ./.buildkite/pipeline.yml
+echo "      - docker tag kfirz/deployster:${RELEASE_AND_SHA} kfirz/deployster:${RELEASE}" >> ./.buildkite/pipeline.yml
+for name in "dresource" "gcp" "k8s" "gcp-cloud-sql" "gcp-compute-ip-address" "gcp-gke-cluster" "gcp-iam-policy" "gcp-iam-service-account" "gcp-project" "k8s-clusterrole" "k8s-clusterrolebinding" "k8s-configmap" "k8s-cronjob" "k8s-daemonset" "k8s-deployment" "k8s-horizontalpodautoscaler" "k8s-ingress" "k8s-job" "k8s-namespace" "k8s-networkpolicy" "k8s-node" "k8s-persistentvolume" "k8s-persistentvolumeclaim" "k8s-pod" "k8s-replicaset" "k8s-replicationcontroller" "k8s-role" "k8s-rolebinding" "k8s-secret" "k8s-service" "k8s-serviceaccount" "k8s-statefulset" "k8s-storageclass"; do
+    echo "      - $(retag_resource ${name})" >> ./.buildkite/pipeline.yml
+done
+
+echo "  - label: Push 'kfirz/deployster:${RELEASE_AND_SHA}'" >> ./.buildkite/pipeline.yml
+echo "    command: docker push kfirz/deployster:${RELEASE_AND_SHA}" >> ./.buildkite/pipeline.yml
+for name in "dresource" "gcp" "k8s" "gcp-cloud-sql" "gcp-compute-ip-address" "gcp-gke-cluster" "gcp-iam-policy" "gcp-iam-service-account" "gcp-project" "k8s-clusterrole" "k8s-clusterrolebinding" "k8s-configmap" "k8s-cronjob" "k8s-daemonset" "k8s-deployment" "k8s-horizontalpodautoscaler" "k8s-ingress" "k8s-job" "k8s-namespace" "k8s-networkpolicy" "k8s-node" "k8s-persistentvolume" "k8s-persistentvolumeclaim" "k8s-pod" "k8s-replicaset" "k8s-replicationcontroller" "k8s-role" "k8s-rolebinding" "k8s-secret" "k8s-service" "k8s-serviceaccount" "k8s-statefulset" "k8s-storageclass"; do
+    echo "  - label: Push 'kfirz/deployster-${name}:${RELEASE}'" >> ./.buildkite/pipeline.yml
+    echo "    command: $(push_resource ${name})" >> ./.buildkite/pipeline.yml
+done
+
+echo "--- Show pipeline"
+cat ./.buildkite/pipeline.yml
+
+echo "--- Uploading pipeline"
+cat ./.buildkite/pipeline.yml | buildkite-agent pipeline upload
 
 exit 0
