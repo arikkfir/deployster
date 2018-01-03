@@ -45,5 +45,6 @@ done
 
 echo "--- Uploading pipeline"
 cat ./.buildkite/pipeline.yml | buildkite-agent pipeline upload
+rm -fv ./.buildkite/pipeline.yml
 
 exit 0
