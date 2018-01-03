@@ -43,9 +43,6 @@ for name in "clusterrole" "clusterrolebinding" "configmap" "cronjob" "daemonset"
     echo "      - docker push kfirz/deployster-k8s-${name}:${TAG}" >> ./.buildkite/pipeline.yml
 done
 
-echo "--- Show pipeline"
-cat ./.buildkite/pipeline.yml
-
 echo "--- Uploading pipeline"
 cat ./.buildkite/pipeline.yml | buildkite-agent pipeline upload
 

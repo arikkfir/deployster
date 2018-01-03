@@ -17,9 +17,6 @@ for name in "dresource" "gcp" "k8s" "gcp-cloud-sql" "gcp-compute-ip-address" "gc
     echo "      - docker push kfirz/deployster-${name}:latest" >> ./.buildkite/pipeline.yml
 done
 
-echo "--- Show pipeline"
-cat ./.buildkite/pipeline.yml
-
 echo "--- Uploading pipeline"
 cat ./.buildkite/pipeline.yml | buildkite-agent pipeline upload
 
