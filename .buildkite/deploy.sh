@@ -20,7 +20,7 @@ for name in "dresource" "gcp" "k8s" "gcp-cloud-sql" "gcp-compute-ip-address" "gc
     echo "      - docker tag kfirz/deployster-${name}:${RELEASE_AND_SHA} kfirz/deployster-${name}:${RELEASE}" >> ./.buildkite/pipeline.yml
 done
 
-echo "  - wait"
+echo "  - wait" >> ./.buildkite/pipeline.yml
 
 echo "  - label: Push 'kfirz/deployster:${RELEASE_AND_SHA}'" >> ./.buildkite/pipeline.yml
 echo "    command: docker push kfirz/deployster:${RELEASE_AND_SHA}" >> ./.buildkite/pipeline.yml
