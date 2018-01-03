@@ -132,7 +132,7 @@ def main():
         },
         'kfirz/deployster-k8s-storageclass': {
             'kind': 'StorageClass',
-            'api_version': 'storage/v1',
+            'api_version': 'storage.k8s.io/v1',
             'factory': K8sResource
         },
     }
