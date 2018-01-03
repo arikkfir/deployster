@@ -3,7 +3,7 @@
 set -euo pipefail
 
 # run tests
-source $(dirname $0)/test.sh
+source $(pwd)/.buildkite/test.sh
 
 RELEASE_AND_SHA="${RELEASE}-${BUILDKITE_COMMIT}"
 
