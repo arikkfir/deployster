@@ -1,5 +1,8 @@
 # Introduction
 
+[![Build status](https://badge.buildkite.com/537ebfc113221b3a3c24b2783c72d0b825c5e2f3d2c99c037f.svg)](https://buildkite.com/kfirs/deployster)
+[![Coverage Status](https://coveralls.io/repos/github/kfirz/deployster/badge.svg?branch=master)](https://coveralls.io/github/kfirz/deployster?branch=master)
+
 Deployster is an extensible resource-centric deployment tool that works by:
 
 - Enabling deployers (eg. _You!_) declare the _desired_ state of the deployment topology
@@ -73,4 +76,3 @@ Deployster was written by Arik Kfir while working @ Infolinks, as a means to imp
 
 [1]: https://cloud.google.com/deployment-manager/docs/configuration/supported-resource-types    "Google Deployment Manager"
 [2]: https://www.terraform.io/docs/providers/external/data_source.html                          "Terraform"
-[3]: http://jinja.pocoo.org/                                                                    "Jinja2"
