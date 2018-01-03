@@ -2,106 +2,38 @@
 
 set -euo pipefail
 
-# run tests
-source $(pwd)/.buildkite/test.sh
-
 RELEASE_AND_SHA="${RELEASE}-${BUILDKITE_COMMIT}"
 
-echo "--- Login to Docker Hub"
-cat ${DOCKERHUB_PASSWORD_FILE} | docker login -u ${DOCKERHUB_USERNAME} --password-stdin
+echo "+++ Generating pipeline" > ./.buildkite/pipeline.yml
+echo "env:" > ./.buildkite/pipeline.yml
+echo "  RELEASE: ${RELEASE}" > ./.buildkite/pipeline.yml
+echo "steps:" > ./.buildkite/pipeline.yml
+echo "  - label: Test" > ./.buildkite/pipeline.yml
+echo "    command: source ./.buildkite/test.sh" > ./.buildkite/pipeline.yml
+echo "  - label: Build & push Deployster image" > ./.buildkite/pipeline.yml
+echo "    command:" > ./.buildkite/pipeline.yml
+echo "      - docker build --build-arg \"VERSION=${RELEASE_AND_SHA}\" -t kfirz/deployster:${RELEASE_AND_SHA} -f ./Dockerfile ." > ./.buildkite/pipeline.yml
+echo "      - docker push kfirz/deployster:${RELEASE_AND_SHA}" > ./.buildkite/pipeline.yml
 
-echo "--- Building 'dresource' Docker image"
-docker build --build-arg "VERSION=${RELEASE_AND_SHA}" -t kfirz/deployster-dresource:${RELEASE_AND_SHA} -f ./resources/Dockerfile.dresource ./resources
+BASE_IMAGES=( "dresource" "gcp" "gcp-cloud-sql" "gcp-compute-ip-address" "gcp-gke-cluster" "gcp-iam-policy" "gcp-iam-service-account" "gcp-project" "k8s" )
+echo "  - label: Build & push base images" > ./.buildkite/pipeline.yml
+echo "    command:" > ./.buildkite/pipeline.yml
+for name in "${BASE_IMAGES[@]}"; do
+    echo "      - docker build --build-arg \"VERSION=${RELEASE_AND_SHA}\" -t kfirz/deployster-${name}:${RELEASE_AND_SHA} -f ./resources/Dockerfile.${name} ./resources" > ./.buildkite/pipeline.yml
+    echo "      - docker push kfirz/deployster-${name}:${RELEASE_AND_SHA}" > ./.buildkite/pipeline.yml
+done
 
-echo "--- Building 'gcp' Docker image"
-docker build --build-arg "VERSION=${RELEASE_AND_SHA}" -t kfirz/deployster-gcp:${RELEASE_AND_SHA} -f ./resources/Dockerfile.gcp ./resources
+echo "  - wait" > ./.buildkite/pipeline.yml
 
-echo "--- Building 'gcp-cloud-sql' Docker image"
-docker build --build-arg "VERSION=${RELEASE_AND_SHA}" -t kfirz/deployster-gcp-cloud-sql:${RELEASE_AND_SHA} -f ./resources/Dockerfile.gcp_cloud_sql ./resources
+K8S_RESOURCE_NAMES=( "clusterrole" "clusterrolebinding" "configmap" "cronjob" "daemonset" "deployment" "horizontalpodautoscaler" "ingress" "job" "namespace" "networkpolicy" "node" "persistentvolume" "persistentvolumeclaim" "pod" "replicaset" "replicationcontroller" "role" "rolebinding" "secret" "service" "serviceaccount" "statefulset" "storageclass" )
+echo "  - label: Alias 'k8s' image as resource-specific images" > ./.buildkite/pipeline.yml
+echo "    command:" > ./.buildkite/pipeline.yml
+for name in "${K8S_RESOURCE_NAMES[@]}"; do
+    echo "      - docker tag kfirz/deployster-k8s:${RELEASE_AND_SHA} kfirz/deployster-k8s-${name}:${RELEASE_AND_SHA}" > ./.buildkite/pipeline.yml
+    echo "      - docker push kfirz/deployster-k8s-${name}:${RELEASE_AND_SHA}" > ./.buildkite/pipeline.yml
+done
 
-echo "--- Building 'gcp-compute-ip-address' Docker image"
-docker build --build-arg "VERSION=${RELEASE_AND_SHA}" -t kfirz/deployster-gcp-compute-ip-address:${RELEASE_AND_SHA} -f ./resources/Dockerfile.gcp_compute_ip_address ./resources
-
-echo "--- Building 'gcp-gke-cluster' Docker image"
-docker build --build-arg "VERSION=${RELEASE_AND_SHA}" -t kfirz/deployster-gcp-gke-cluster:${RELEASE_AND_SHA} -f ./resources/Dockerfile.gcp_gke_cluster ./resources
-
-echo "--- Building 'gcp-iam-policy' Docker image"
-docker build --build-arg "VERSION=${RELEASE_AND_SHA}" -t kfirz/deployster-gcp-iam-policy:${RELEASE_AND_SHA} -f ./resources/Dockerfile.gcp_iam_service_account ./resources
-
-echo "--- Building 'gcp-iam-service-account' Docker image"
-docker build --build-arg "VERSION=${RELEASE_AND_SHA}" -t kfirz/deployster-gcp-iam-service-account:${RELEASE_AND_SHA} -f ./resources/Dockerfile.gcp_iam_policy ./resources
-
-echo "--- Building 'gcp-project' Docker image"
-docker build --build-arg "VERSION=${RELEASE_AND_SHA}" -t kfirz/deployster-gcp-project:${RELEASE_AND_SHA} -f ./resources/Dockerfile.gcp_project ./resources
-
-echo "--- Building 'k8s' Docker image"
-docker build --build-arg "VERSION=${RELEASE_AND_SHA}" -t kfirz/deployster-k8s:${RELEASE_AND_SHA} -f ./resources/Dockerfile.k8s ./resources
-
-echo "--- Building 'deployster' image"
-docker build --build-arg "VERSION=${RELEASE_AND_SHA}" --tag kfirz/deployster:${RELEASE_AND_SHA} -f ./Dockerfile .
-
-echo "--- Tagging Kubernetes resource image aliases"
-docker tag kfirz/deployster-k8s:${RELEASE_AND_SHA} kfirz/deployster-k8s-clusterrole:${RELEASE_AND_SHA}
-docker tag kfirz/deployster-k8s:${RELEASE_AND_SHA} kfirz/deployster-k8s-clusterrolebinding:${RELEASE_AND_SHA}
-docker tag kfirz/deployster-k8s:${RELEASE_AND_SHA} kfirz/deployster-k8s-configmap:${RELEASE_AND_SHA}
-docker tag kfirz/deployster-k8s:${RELEASE_AND_SHA} kfirz/deployster-k8s-cronjob:${RELEASE_AND_SHA}
-docker tag kfirz/deployster-k8s:${RELEASE_AND_SHA} kfirz/deployster-k8s-daemonset:${RELEASE_AND_SHA}
-docker tag kfirz/deployster-k8s:${RELEASE_AND_SHA} kfirz/deployster-k8s-deployment:${RELEASE_AND_SHA}
-docker tag kfirz/deployster-k8s:${RELEASE_AND_SHA} kfirz/deployster-k8s-horizontalpodautoscaler:${RELEASE_AND_SHA}
-docker tag kfirz/deployster-k8s:${RELEASE_AND_SHA} kfirz/deployster-k8s-ingress:${RELEASE_AND_SHA}
-docker tag kfirz/deployster-k8s:${RELEASE_AND_SHA} kfirz/deployster-k8s-job:${RELEASE_AND_SHA}
-docker tag kfirz/deployster-k8s:${RELEASE_AND_SHA} kfirz/deployster-k8s-namespace:${RELEASE_AND_SHA}
-docker tag kfirz/deployster-k8s:${RELEASE_AND_SHA} kfirz/deployster-k8s-networkpolicy:${RELEASE_AND_SHA}
-docker tag kfirz/deployster-k8s:${RELEASE_AND_SHA} kfirz/deployster-k8s-node:${RELEASE_AND_SHA}
-docker tag kfirz/deployster-k8s:${RELEASE_AND_SHA} kfirz/deployster-k8s-persistentvolume:${RELEASE_AND_SHA}
-docker tag kfirz/deployster-k8s:${RELEASE_AND_SHA} kfirz/deployster-k8s-persistentvolumeclaim:${RELEASE_AND_SHA}
-docker tag kfirz/deployster-k8s:${RELEASE_AND_SHA} kfirz/deployster-k8s-pod:${RELEASE_AND_SHA}
-docker tag kfirz/deployster-k8s:${RELEASE_AND_SHA} kfirz/deployster-k8s-replicaset:${RELEASE_AND_SHA}
-docker tag kfirz/deployster-k8s:${RELEASE_AND_SHA} kfirz/deployster-k8s-replicationcontroller:${RELEASE_AND_SHA}
-docker tag kfirz/deployster-k8s:${RELEASE_AND_SHA} kfirz/deployster-k8s-role:${RELEASE_AND_SHA}
-docker tag kfirz/deployster-k8s:${RELEASE_AND_SHA} kfirz/deployster-k8s-rolebinding:${RELEASE_AND_SHA}
-docker tag kfirz/deployster-k8s:${RELEASE_AND_SHA} kfirz/deployster-k8s-secret:${RELEASE_AND_SHA}
-docker tag kfirz/deployster-k8s:${RELEASE_AND_SHA} kfirz/deployster-k8s-service:${RELEASE_AND_SHA}
-docker tag kfirz/deployster-k8s:${RELEASE_AND_SHA} kfirz/deployster-k8s-serviceaccount:${RELEASE_AND_SHA}
-docker tag kfirz/deployster-k8s:${RELEASE_AND_SHA} kfirz/deployster-k8s-statefulset:${RELEASE_AND_SHA}
-docker tag kfirz/deployster-k8s:${RELEASE_AND_SHA} kfirz/deployster-k8s-storageclass:${RELEASE_AND_SHA}
-
-if [[ -z "${LOCAL+x}" ]]; then
-    echo "--- Pushing images"
-    docker push kfirz/deployster-dresource:${RELEASE_AND_SHA}
-    docker push kfirz/deployster-gcp:${RELEASE_AND_SHA}
-    docker push kfirz/deployster-gcp-cloud-sql:${RELEASE_AND_SHA}
-    docker push kfirz/deployster-gcp-compute-ip-address:${RELEASE_AND_SHA}
-    docker push kfirz/deployster-gcp-gke-cluster:${RELEASE_AND_SHA}
-    docker push kfirz/deployster-gcp-iam-policy:${RELEASE_AND_SHA}
-    docker push kfirz/deployster-gcp-iam-service-account:${RELEASE_AND_SHA}
-    docker push kfirz/deployster-gcp-project:${RELEASE_AND_SHA}
-    docker push kfirz/deployster-k8s:${RELEASE_AND_SHA}
-    docker push kfirz/deployster-k8s-clusterrole:${RELEASE_AND_SHA}
-    docker push kfirz/deployster-k8s-clusterrolebinding:${RELEASE_AND_SHA}
-    docker push kfirz/deployster-k8s-configmap:${RELEASE_AND_SHA}
-    docker push kfirz/deployster-k8s-cronjob:${RELEASE_AND_SHA}
-    docker push kfirz/deployster-k8s-daemonset:${RELEASE_AND_SHA}
-    docker push kfirz/deployster-k8s-deployment:${RELEASE_AND_SHA}
-    docker push kfirz/deployster-k8s-horizontalpodautoscaler:${RELEASE_AND_SHA}
-    docker push kfirz/deployster-k8s-ingress:${RELEASE_AND_SHA}
-    docker push kfirz/deployster-k8s-job:${RELEASE_AND_SHA}
-    docker push kfirz/deployster-k8s-namespace:${RELEASE_AND_SHA}
-    docker push kfirz/deployster-k8s-networkpolicy:${RELEASE_AND_SHA}
-    docker push kfirz/deployster-k8s-node:${RELEASE_AND_SHA}
-    docker push kfirz/deployster-k8s-persistentvolume:${RELEASE_AND_SHA}
-    docker push kfirz/deployster-k8s-persistentvolumeclaim:${RELEASE_AND_SHA}
-    docker push kfirz/deployster-k8s-pod:${RELEASE_AND_SHA}
-    docker push kfirz/deployster-k8s-replicaset:${RELEASE_AND_SHA}
-    docker push kfirz/deployster-k8s-replicationcontroller:${RELEASE_AND_SHA}
-    docker push kfirz/deployster-k8s-role:${RELEASE_AND_SHA}
-    docker push kfirz/deployster-k8s-rolebinding:${RELEASE_AND_SHA}
-    docker push kfirz/deployster-k8s-secret:${RELEASE_AND_SHA}
-    docker push kfirz/deployster-k8s-service:${RELEASE_AND_SHA}
-    docker push kfirz/deployster-k8s-serviceaccount:${RELEASE_AND_SHA}
-    docker push kfirz/deployster-k8s-statefulset:${RELEASE_AND_SHA}
-    docker push kfirz/deployster-k8s-storageclass:${RELEASE_AND_SHA}
-    docker push kfirz/deployster:${RELEASE_AND_SHA}
-fi
+echo "--- Uploading pipeline"
+cat ./.buildkite/pipeline.yml | buildkite-agent pipeline upload
 
 exit 0
