@@ -1,11 +1,12 @@
+/.dockerignore
+/.git
+/.gitignore
 /.python3
 /docs
 /examples
-/.dockerignore
-/.gitignore
-/*.iml
-/*.md
-/*-sa*.json
 /LICENSE
+/README.md
 /src/__pycache__
 /tests/__pycache__
+/*.iml
+/*-sa*.json
