@@ -2,6 +2,7 @@
 
 set -euo pipefail
 
+
 TAG="${RELEASE}-${BUILDKITE_COMMIT}"
 
 function build_resource() {
