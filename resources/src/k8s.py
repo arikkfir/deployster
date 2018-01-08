@@ -67,6 +67,10 @@ class K8sResource(DResource):
     def timeout_interval_ms(self) -> int:
         return self.info.config['timeout_interval_ms'] if 'timeout_interval_ms' in self.info.config else 100
 
+    @property
+    def force_update(self) -> bool:
+        return False
+
     def discover_state(self):
         if 'namespace' in self.info.config['manifest']['metadata']:
             return self.svc.find_k8s_namespace_object(self.info.config['manifest'])
