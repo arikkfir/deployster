@@ -14,7 +14,8 @@ WORKSPACE_DIR="$(pwd)"
 WORK_DIR="$(mkdir -p ./work; cd ./work; pwd)"
 
 # set Docker flags
-[[ -t 1 ]] && TTY_FLAGS="${TTY_FLAGS} -it"
+[[ -t 1 && "${TTY}" != "false" && "${TTY}" != "0" && "${TTY}" != "off" && "${TTY}" != "no" ]] && \
+    TTY_FLAGS="${TTY_FLAGS} -it"
 
 # run!
 docker run ${TTY_FLAGS} \
