@@ -274,7 +274,7 @@ class MockExternalServices(ExternalServices):
             duration: int = self._k8s_create_times[key]
             time.sleep(duration / 1000)
 
-    def update_k8s_object(self, manifest: dict, timeout: int = 60 * 5, verbose: bool = True) -> None:
+    def update_k8s_object(self, manifest: dict, timeout: int = 60 * 5, force: bool = False, verbose: bool = True) -> None:
         api_version: str = manifest["apiVersion"]
         kind: str = manifest["kind"]
         metadata: dict = manifest["metadata"]

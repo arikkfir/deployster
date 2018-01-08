@@ -9,6 +9,7 @@ from k8s_deployment import K8sDeployment
 from k8s_ingress import K8sIngress
 from k8s_secret import K8sSecret
 from k8s_service import K8sService
+from k8s_statefulset import K8sStatefulSet
 
 
 def main():
@@ -128,7 +129,7 @@ def main():
         'kfirz/deployster-k8s-statefulset': {
             'kind': 'StatefulSet',
             'api_version': 'apps/v1beta2',
-            'factory': K8sResource
+            'factory': K8sStatefulSet
         },
         'kfirz/deployster-k8s-storageclass': {
             'kind': 'StorageClass',

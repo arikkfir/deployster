@@ -584,10 +584,11 @@ class ExternalServices:
                        timeout=timeout,
                        shell=True)
 
-    def update_k8s_object(self, manifest: dict, timeout: int = 60 * 5, verbose: bool = False) -> None:
+    def update_k8s_object(self, manifest: dict, timeout: int = 60 * 5, force: bool = False, verbose: bool = False) \
+            -> None:
         if verbose:
             print(f"Updating Kubernetes object from:\n{json.dumps(manifest, indent=2)}")
-        subprocess.run(f"kubectl apply -f -",
+        subprocess.run(f"kubectl apply --force={'true' if force else 'false'} -f -",
                        input=json.dumps(manifest),
                        encoding='utf-8',
                        check=True,
