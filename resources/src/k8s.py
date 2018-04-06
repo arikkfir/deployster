@@ -1,6 +1,8 @@
+import json
 import sys
 import time
 from copy import deepcopy
+from pathlib import Path
 from pprint import pprint
 from time import sleep
 from typing import Sequence, MutableSequence
@@ -94,6 +96,8 @@ class K8sResource(DResource):
             if self.info.verbose:
                 print("Found state differences: ", file=sys.stderr)
                 pprint(differences, stream=sys.stderr)
+            with Path('./manifest-diff.json').open(mode='w') as f:
+                f.write(json.dumps(differences, indent=4))
             kind: str = self.info.config['manifest']['kind']
             name: str = self.info.config['manifest']['metadata']['name']
             actions.append(DAction(name='update', description=f"Update {kind.lower()} '{name}'", args=['update']))
