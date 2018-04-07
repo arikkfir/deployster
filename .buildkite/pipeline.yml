@@ -1,3 +1,6 @@
 steps:
-  - label: Run tests
+  - label: Test
     command: source ./.buildkite/test.sh
+
+  - label: Build
+    command: source .buildkite/generate-pipeline.sh ${BUILDKITE_COMMIT} | buildkite-agent pipeline upload
