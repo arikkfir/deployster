@@ -12,7 +12,7 @@ if [[ -z "${1}" ]]; then
 fi
 
 function build_resource() {
-    echo "docker build --build-arg \"VERSION=${TAG}\" -t kfirz/deployster-${1}:${TAG} -f ./resources/Dockerfile.${1} ./resources"
+    echo "docker build -t kfirz/deployster-${1}:${TAG} -f ./resources/Dockerfile.${1} ./resources"
 }
 
 echo "steps:"
