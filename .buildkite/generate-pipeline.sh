@@ -37,7 +37,7 @@ echo "      docker-login#v1.0.0:"
 echo "        username: arikkfir"
 echo "    command:"
 echo "      - set -ex"
-echo '      - sed -i "" "s/^FROM \(kfirz\/.\+\):.\+/FROM \1:${TAG}/" ./resources/Dockerfile.gcp'
+echo '      - sed -i "s/^FROM \(kfirz\/.\+\):.\+/FROM \1:${TAG}/" ./resources/Dockerfile.gcp'
 echo "      - $(build_resource gcp)"
 echo "      - docker push kfirz/deployster-gcp:${TAG}"
 echo "  - label: Build \"k8s\" resource images"
@@ -46,7 +46,7 @@ echo "      docker-login#v1.0.0:"
 echo "        username: arikkfir"
 echo "    command:"
 echo "      - set -ex"
-echo '      - sed -i "" "s/^FROM \(kfirz\/.\+\):.\+/FROM \1:${TAG}/" ./resources/Dockerfile.k8s'
+echo '      - sed -i "s/^FROM \(kfirz\/.\+\):.\+/FROM \1:${TAG}/" ./resources/Dockerfile.k8s'
 echo "      - $(build_resource k8s)"
 echo "      - docker push kfirz/deployster-k8s:${TAG}"
 echo "  - wait"
@@ -57,7 +57,7 @@ for name in "gcp-cloud-sql" "gcp-compute-ip-address" "gcp-gke-cluster" "gcp-iam-
     echo "        username: arikkfir"
     echo "    command:"
     echo "      - set -ex"
-    echo '      - sed -i "" "s/^FROM \(kfirz\/.\+\):.\+/FROM \1:${TAG}/" ./resources/Dockerfile.'${name}
+    echo '      - sed -i "s/^FROM \(kfirz\/.\+\):.\+/FROM \1:${TAG}/" ./resources/Dockerfile.'${name}
     echo "      - $(build_resource ${name})"
     echo "      - docker push kfirz/deployster-${name}:${TAG}"
 done
@@ -68,7 +68,7 @@ for name in "clusterrole" "clusterrolebinding" "configmap" "cronjob" "daemonset"
     echo "        username: arikkfir"
     echo "    command:"
     echo "      - set -ex"
-    echo '      - sed -i "" "s/^FROM \(kfirz\/.\+\):.\+/FROM \1:${TAG}/" ./resources/Dockerfile.'${name}
+    echo '      - sed -i "s/^FROM \(kfirz\/.\+\):.\+/FROM \1:${TAG}/" ./resources/Dockerfile.'${name}
     echo "      - docker tag kfirz/deployster-k8s:${TAG} kfirz/deployster-k8s-${name}:${TAG}"
     echo "      - docker push kfirz/deployster-k8s-${name}:${TAG}"
 done
