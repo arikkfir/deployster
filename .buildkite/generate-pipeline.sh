@@ -64,7 +64,6 @@ for name in "clusterrole" "clusterrolebinding" "configmap" "cronjob" "daemonset"
     echo "      docker-login#v1.0.0:"
     echo "        username: arikkfir"
     echo "    command:"
-    echo '      - sed -i "s/^FROM \(kfirz\/.\+\):.\+/FROM \1:'${TAG}'/" ./resources/Dockerfile.'${name}
     echo "      - docker tag kfirz/deployster-k8s:${TAG} kfirz/deployster-k8s-${name}:${TAG}"
     echo "      - docker push kfirz/deployster-k8s-${name}:${TAG}"
 done
