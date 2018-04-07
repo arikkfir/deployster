@@ -1,0 +1,3 @@
+steps:
+  - label: Run tests
+    command: source ./.buildkite/test.sh

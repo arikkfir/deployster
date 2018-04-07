@@ -12,9 +12,6 @@ echo "+++ Generating pipeline"
 echo "" > ./.buildkite/pipeline.yml
 echo "steps:" >> ./.buildkite/pipeline.yml
 
-echo "  - label: Run tests" >> ./.buildkite/pipeline.yml
-echo "    command: source ./.buildkite/test.sh" >> ./.buildkite/pipeline.yml
-
 echo "  - label: Build & push 'kfirz/deployster'" >> ./.buildkite/pipeline.yml
 echo "    command:" >> ./.buildkite/pipeline.yml
 echo "      - docker build --build-arg \"VERSION=${TAG}\" -t kfirz/deployster:${TAG} -f ./Dockerfile ." >> ./.buildkite/pipeline.yml
