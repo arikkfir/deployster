@@ -5,6 +5,8 @@ steps:
       docker#v1.1.1:
         image: "centos:7.4.1708"
         workdir: "/app"
+        mount-buildkite-agent: false
+        debug: true
     command:
       - cat /etc/os-release
 #      - yum install -y https://centos7.iuscommunity.org/ius-release.rpm
