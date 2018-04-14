@@ -1,9 +1,5 @@
 #!/usr/bin/env bash
 
-########################################################################################################################
-# This script is run inside the testing Docker image. It invokes the "py.test" harness, and reports results to Coveralls
-########################################################################################################################
-
 PYTHONPATH="$(pwd)/src:$(pwd)/resources/src" \
     py.test --cov-config=./.coveragerc \
             --cov-report=term-missing \
@@ -17,7 +13,7 @@ PYTHONPATH="$(pwd)/src:$(pwd)/resources/src" \
             $@
 [[ $? != 0 ]] && echo "Tests failed!" >&2 && exit 1
 
-if [[ -n "${BUILDKITE}" ]]; then
+if [[ -n "${COVERALLS_REPO_TOKEN}" ]]; then
     coveralls
     [[ $? != 0 ]] && echo "Coverage reporting failed!" >&2 && exit 1
 fi
