@@ -3,7 +3,7 @@ steps:
   - label: Test
     plugins:
       docker#v1.1.1:
-        image: "python-3.6.5-stretch"
+        image: "python:3.6.5-stretch"
 #        image: "centos:7.4.1708"
         workdir: "/app"
     command:
