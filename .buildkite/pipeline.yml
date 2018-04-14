@@ -3,14 +3,15 @@ steps:
   - label: Test
     plugins:
       docker#v1.1.1:
-        image: "centos:7.4.1708"
+        image: "python-3.6.5-stretch"
+#        image: "centos:7.4.1708"
         workdir: "/app"
-        mount-buildkite-agent: false
-    command: |
-      yum install -y https://centos7.iuscommunity.org/ius-release.rpm
-      yum install -y python36u python36u-pip git
-      pip3.6 --disable-pip-version-check --no-cache-dir install -r requirements.txt
-      ./test.sh
+    command:
+      - pip --disable-pip-version-check --no-cache-dir install -r requirements.txt
+      - ./test.sh
 
+#      yum install -y https://centos7.iuscommunity.org/ius-release.rpm
+#      yum install -y python36u python36u-pip git
+#      pip3.6 --disable-pip-version-check --no-cache-dir install -r requirements.txt
 #  - label: Build
 #    command: source .buildkite/generate-pipeline.sh ${BUILDKITE_TAG:-$BUILDKITE_COMMIT} | buildkite-agent pipeline upload
