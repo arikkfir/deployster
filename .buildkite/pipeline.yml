@@ -4,9 +4,11 @@ steps:
     plugins:
       docker#v1.1.1:
         image: "python:3.6.5-stretch"
+        environment:
+          - COVERALLS_REPO_TOKEN
     command:
       - pip --disable-pip-version-check --no-cache-dir install -r requirements.txt
-      - ./test.sh
+      #- ./test.sh
 
 #  - label: Build
 #    command: source .buildkite/generate-pipeline.sh ${BUILDKITE_TAG:-$BUILDKITE_COMMIT} | buildkite-agent pipeline upload
