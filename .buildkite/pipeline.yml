@@ -8,8 +8,7 @@ steps:
           - COVERALLS_REPO_TOKEN
     command:
       - pip --disable-pip-version-check --no-cache-dir install -r requirements.txt
-      - env
-      #- ./test.sh
+      - ./test.sh
 
 #  - label: Build
 #    command: source .buildkite/generate-pipeline.sh ${BUILDKITE_TAG:-$BUILDKITE_COMMIT} | buildkite-agent pipeline upload
