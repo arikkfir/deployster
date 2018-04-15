@@ -13,7 +13,7 @@ PYTHONPATH="$(pwd)/src:$(pwd)/resources/src" \
             $@
 [[ $? != 0 ]] && echo "Tests failed!" >&2 && exit 1
 
-if [[ -n "${COVERALLS_TOKEN}" ]]; then
+if [[ -n "${COVERALLS_REPO_TOKEN}" ]]; then
     echo "Reporting coverage to Coveralls.io"
     coveralls
     [[ $? != 0 ]] && echo "Coverage reporting failed!" >&2 && exit 1
