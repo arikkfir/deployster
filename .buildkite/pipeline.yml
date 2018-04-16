@@ -10,5 +10,5 @@ steps:
       - pip --disable-pip-version-check --no-cache-dir install -r requirements.txt
       - ./test.sh
 
-#  - label: Build
-#    command: source .buildkite/generate-pipeline.sh ${BUILDKITE_TAG:-$BUILDKITE_COMMIT} | buildkite-agent pipeline upload
+  - label: Generate pipeline
+    command: source .buildkite/generate-pipeline.sh ${BUILDKITE_TAG:-$BUILDKITE_COMMIT} | buildkite-agent pipeline upload
