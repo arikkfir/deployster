@@ -1,19 +1,5 @@
 steps:
 
-  # TODO: consider running tests as part of building the main image
-
-  ######################################################################################################################
-  # Run the tests and wait for them to finish successfully.
-  ######################################################################################################################
-  - label: Test
-    plugins:
-      docker#v1.1.1:
-        image: "python:3.6.5-stretch"
-        environment:
-          - CODECOV_TOKEN=515ac87b-0f3f-45e2-a46e-20aa32baf273
-    command: pip --disable-pip-version-check --no-cache-dir install -r requirements.txt && ./test.sh
-  - wait
-
   ######################################################################################################################
   # Build the "deployster" image, which is the main executable, and the "dresource" image, which serves as the base
   # image for all our other resource images.
@@ -21,8 +7,10 @@ steps:
   ######################################################################################################################
   - label: kfirz/deployster
     plugins: { docker-login#v1.0.0: { username: arikkfir} }
+    environment:
+      - CODECOV_TOKEN=515ac87b-0f3f-45e2-a46e-20aa32baf273
     command:
-      - docker build --build-arg "VERSION=${BUILDKITE_TAG:-$BUILDKITE_COMMIT}" -t kfirz/deployster:${BUILDKITE_TAG:-$BUILDKITE_COMMIT} -f ./Dockerfile .
+      - docker build --build-arg "CODECOV_TOKEN=515ac87b-0f3f-45e2-a46e-20aa32baf273" --build-arg "VERSION=${BUILDKITE_TAG:-$BUILDKITE_COMMIT}" -t kfirz/deployster:${BUILDKITE_TAG:-$BUILDKITE_COMMIT} -f ./Dockerfile .
       - docker push kfirz/deployster:${BUILDKITE_TAG:-$BUILDKITE_COMMIT}
   - label: kfirz/dresource
     plugins: { docker-login#v1.0.0: { username: arikkfir} }
@@ -44,4 +32,4 @@ steps:
   # Upload additional pipeline steps which will build all our other images.
   ######################################################################################################################
   - label: Augment pipeline
-    command: source ./.buildkite/generate-resource-images-pipeline.sh ${BUILDKITE_TAG:-$BUILDKITE_COMMIT} | buildkite-agent pipeline upload
+    command: ./.buildkite/generate-resource-images-pipeline.sh ${BUILDKITE_TAG:-$BUILDKITE_COMMIT} | buildkite-agent pipeline upload
