@@ -2,50 +2,46 @@ steps:
 
   # TODO: consider running tests as part of building the main image
 
+  ######################################################################################################################
+  # Run the tests and wait for them to finish successfully.
+  ######################################################################################################################
   - label: Test
     plugins:
       docker#v1.1.1:
         image: "python:3.6.5-stretch"
         environment:
           - CODECOV_TOKEN=515ac87b-0f3f-45e2-a46e-20aa32baf273
-    command:
-      - pip --disable-pip-version-check --no-cache-dir install -r requirements.txt
-      - ./test.sh
+    command: pip --disable-pip-version-check --no-cache-dir install -r requirements.txt && ./test.sh
+  - wait
 
+  ######################################################################################################################
+  # Build the "deployster" image, which is the main executable, and the "dresource" image, which serves as the base
+  # image for all our other resource images.
+  # Build both images in parallel and wait for both of them to finish.
+  ######################################################################################################################
   - label: Build "kfirz/deployster"
-    plugins:
-      docker-login#v1.0.0:
-        username: arikkfir
+    plugins: { docker-login#v1.0.0: { username: arikkfir} }
     command:
       - docker build --build-arg "VERSION=${BUILDKITE_TAG:-$BUILDKITE_COMMIT}" -t kfirz/deployster:${BUILDKITE_TAG:-$BUILDKITE_COMMIT} -f ./Dockerfile .
       - docker push kfirz/deployster:${BUILDKITE_TAG:-$BUILDKITE_COMMIT}
-
   - label: Build "kfirz/dresource"
-    plugins:
-      docker-login#v1.0.0:
-        username: arikkfir
-    command:
-      - docker build --build-arg "VERSION=${BUILDKITE_TAG:-$BUILDKITE_COMMIT}" -t kfirz/deployster-dresource:${BUILDKITE_TAG:-$BUILDKITE_COMMIT} -f ./resources/Dockerfile.dresource ./resources
-      - docker push kfirz/deployster-dresource:${BUILDKITE_TAG:-$BUILDKITE_COMMIT}
+    plugins: { docker-login#v1.0.0: { username: arikkfir} }
+    command: ./.buildkite/build-resource-image.sh dresource ${BUILDKITE_TAG:-$BUILDKITE_COMMIT}"
+  - wait
 
-#  - wait
-#- label: Build \"gcp\" resource images
-#  plugins:
-#    docker-login#v1.0.0:
-#      username: arikkfir
-#  command:
-#    - sed -i "s/^FROM \(kfirz\/.\+\):.\+/FROM \1:'${TAG}'/" ./resources/Dockerfile.gcp'
-#    - $(build_resource gcp)"
-#    - docker push kfirz/deployster-gcp:${TAG}"
-#- label: Build \"k8s\" resource images"
-#  plugins:"
-#    docker-login#v1.0.0:"
-#      username: arikkfir"
-#  command:"
-#echo '      - sed -i "s/^FROM \(kfirz\/.\+\):.\+/FROM \1:'${TAG}'/" ./resources/Dockerfile.k8s'
-#    - $(build_resource k8s)
-#    - docker push kfirz/deployster-k8s:${TAG}
-#- wait
-#
-#  - label: Generate pipeline
-#    command: source .buildkite/generate-pipeline.sh ${BUILDKITE_TAG:-$BUILDKITE_COMMIT} | buildkite-agent pipeline upload
+  ######################################################################################################################
+  # Build the "k8s" & "gcp" images, which serve as base images for our GCP & Kubernetes resource images.
+  ######################################################################################################################
+  - label: Build "kfirz/gcp"
+    plugins: { docker-login#v1.0.0: { username: arikkfir} }
+    command: ./.buildkite/build-resource-image.sh gcp ${BUILDKITE_TAG:-$BUILDKITE_COMMIT}"
+  - label: Build "kfirz/k8s"
+    plugins: { docker-login#v1.0.0: { username: arikkfir} }
+    command: ./.buildkite/build-resource-image.sh k8s ${BUILDKITE_TAG:-$BUILDKITE_COMMIT}"
+  - wait
+
+  ######################################################################################################################
+  # Upload additional pipeline steps which will build all our other images.
+  ######################################################################################################################
+  - label: Augment pipeline
+    command: source ./.buildkite/generate-resource-images-pipeline.sh ${BUILDKITE_TAG:-$BUILDKITE_COMMIT} | buildkite-agent pipeline upload
