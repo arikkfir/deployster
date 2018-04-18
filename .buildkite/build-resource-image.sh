@@ -21,7 +21,7 @@ if [[ ! -f "${DOCKERFILE}" ]]; then
     exit 1
 fi
 
-set -ex
+set -euo pipefail
 
 sed -i "s/^FROM \(kfirz\/.\+\):.\+/FROM \1:'${TAG}'/" ${DOCKERFILE}
 docker build --build-arg "VERSION=${TAG}" -t kfirz/deployster-${RESOURCE}:${TAG} -f ${DOCKERFILE} ./resources
