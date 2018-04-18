@@ -34,10 +34,10 @@ steps:
   ######################################################################################################################
   - label: kfirz/gcp
     plugins: { docker-login#v1.0.0: { username: arikkfir} }
-    command: ./.buildkite/build-resource-image.sh gcp ${BUILDKITE_TAG:-$BUILDKITE_COMMIT}"
+    command: ./.buildkite/build-resource-image.sh gcp ${BUILDKITE_TAG:-$BUILDKITE_COMMIT}
   - label: kfirz/k8s
     plugins: { docker-login#v1.0.0: { username: arikkfir} }
-    command: ./.buildkite/build-resource-image.sh k8s ${BUILDKITE_TAG:-$BUILDKITE_COMMIT}"
+    command: ./.buildkite/build-resource-image.sh k8s ${BUILDKITE_TAG:-$BUILDKITE_COMMIT}
   - wait
 
   ######################################################################################################################
