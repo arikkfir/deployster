@@ -7,8 +7,6 @@ steps:
   ######################################################################################################################
   - label: kfirz/deployster
     plugins: { docker-login#v1.0.0: { username: arikkfir} }
-    environment:
-      - CODECOV_TOKEN=515ac87b-0f3f-45e2-a46e-20aa32baf273
     command:
       - docker build --build-arg "CODECOV_TOKEN=515ac87b-0f3f-45e2-a46e-20aa32baf273" --build-arg "VERSION=${BUILDKITE_TAG:-$BUILDKITE_COMMIT}" -t kfirz/deployster:${BUILDKITE_TAG:-$BUILDKITE_COMMIT} -f ./Dockerfile .
       - docker push kfirz/deployster:${BUILDKITE_TAG:-$BUILDKITE_COMMIT}
