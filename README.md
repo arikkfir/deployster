@@ -1,7 +1,7 @@
 # Introduction
 
 [![Build status](https://badge.buildkite.com/537ebfc113221b3a3c24b2783c72d0b825c5e2f3d2c99c037f.svg)](https://buildkite.com/kfirs/deployster)
-[![Coverage Status](https://coveralls.io/repos/github/kfirz/deployster/badge.svg?branch=master)](https://coveralls.io/github/kfirz/deployster?branch=master)
+[![codecov](https://codecov.io/gh/kfirz/deployster/branch/master/graph/badge.svg)](https://codecov.io/gh/kfirz/deployster)
 
 Deployster is an extensible resource-centric deployment tool that works by:
 
