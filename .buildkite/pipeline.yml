@@ -1,5 +1,7 @@
 steps:
 
+  # TODO: consider running tests as part of building the main image
+
   - label: Test
     plugins:
       docker#v1.1.1:
@@ -10,5 +12,40 @@ steps:
       - pip --disable-pip-version-check --no-cache-dir install -r requirements.txt
       - ./test.sh
 
-  - label: Generate pipeline
-    command: source .buildkite/generate-pipeline.sh ${BUILDKITE_TAG:-$BUILDKITE_COMMIT} | buildkite-agent pipeline upload
+  - label: Build "kfirz/deployster"
+    plugins:
+      docker-login#v1.0.0:
+        username: arikkfir
+    command:
+      - docker build --build-arg "VERSION=${BUILDKITE_TAG:-$BUILDKITE_COMMIT}" -t kfirz/deployster:${BUILDKITE_TAG:-$BUILDKITE_COMMIT} -f ./Dockerfile .
+      - docker push kfirz/deployster:${BUILDKITE_TAG:-$BUILDKITE_COMMIT}
+
+  - label: Build "kfirz/dresource"
+    plugins:
+      docker-login#v1.0.0:
+        username: arikkfir
+    command:
+      - docker build --build-arg "VERSION=${BUILDKITE_TAG:-$BUILDKITE_COMMIT}" -t kfirz/deployster-dresource:${BUILDKITE_TAG:-$BUILDKITE_COMMIT} -f ./resources/Dockerfile.dresource ./resources
+      - docker push kfirz/deployster-dresource:${BUILDKITE_TAG:-$BUILDKITE_COMMIT}
+
+#  - wait
+#- label: Build \"gcp\" resource images
+#  plugins:
+#    docker-login#v1.0.0:
+#      username: arikkfir
+#  command:
+#    - sed -i "s/^FROM \(kfirz\/.\+\):.\+/FROM \1:'${TAG}'/" ./resources/Dockerfile.gcp'
+#    - $(build_resource gcp)"
+#    - docker push kfirz/deployster-gcp:${TAG}"
+#- label: Build \"k8s\" resource images"
+#  plugins:"
+#    docker-login#v1.0.0:"
+#      username: arikkfir"
+#  command:"
+#echo '      - sed -i "s/^FROM \(kfirz\/.\+\):.\+/FROM \1:'${TAG}'/" ./resources/Dockerfile.k8s'
+#    - $(build_resource k8s)
+#    - docker push kfirz/deployster-k8s:${TAG}
+#- wait
+#
+#  - label: Generate pipeline
+#    command: source .buildkite/generate-pipeline.sh ${BUILDKITE_TAG:-$BUILDKITE_COMMIT} | buildkite-agent pipeline upload
