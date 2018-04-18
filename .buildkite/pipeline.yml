@@ -19,23 +19,23 @@ steps:
   # image for all our other resource images.
   # Build both images in parallel and wait for both of them to finish.
   ######################################################################################################################
-  - label: Build "kfirz/deployster"
+  - label: kfirz/deployster
     plugins: { docker-login#v1.0.0: { username: arikkfir} }
     command:
       - docker build --build-arg "VERSION=${BUILDKITE_TAG:-$BUILDKITE_COMMIT}" -t kfirz/deployster:${BUILDKITE_TAG:-$BUILDKITE_COMMIT} -f ./Dockerfile .
       - docker push kfirz/deployster:${BUILDKITE_TAG:-$BUILDKITE_COMMIT}
-  - label: Build "kfirz/dresource"
+  - label: kfirz/dresource
     plugins: { docker-login#v1.0.0: { username: arikkfir} }
-    command: ./.buildkite/build-resource-image.sh dresource ${BUILDKITE_TAG:-$BUILDKITE_COMMIT}"
+    command: ./.buildkite/build-resource-image.sh dresource ${BUILDKITE_TAG:-$BUILDKITE_COMMIT}
   - wait
 
   ######################################################################################################################
   # Build the "k8s" & "gcp" images, which serve as base images for our GCP & Kubernetes resource images.
   ######################################################################################################################
-  - label: Build "kfirz/gcp"
+  - label: kfirz/gcp
     plugins: { docker-login#v1.0.0: { username: arikkfir} }
     command: ./.buildkite/build-resource-image.sh gcp ${BUILDKITE_TAG:-$BUILDKITE_COMMIT}"
-  - label: Build "kfirz/k8s"
+  - label: kfirz/k8s
     plugins: { docker-login#v1.0.0: { username: arikkfir} }
     command: ./.buildkite/build-resource-image.sh k8s ${BUILDKITE_TAG:-$BUILDKITE_COMMIT}"
   - wait
