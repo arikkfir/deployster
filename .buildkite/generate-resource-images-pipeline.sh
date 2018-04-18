@@ -15,7 +15,9 @@ done
 for name in "clusterrole" "clusterrolebinding" "configmap" "cronjob" "daemonset" "deployment" "horizontalpodautoscaler" "ingress" "job" "namespace" "networkpolicy" "node" "persistentvolume" "persistentvolumeclaim" "pod" "replicaset" "replicationcontroller" "role" "rolebinding" "secret" "service" "serviceaccount" "statefulset" "storageclass"; do
     echo "  - label: kfirz/deployster-k8s-${name}"
     echo "    plugins: { docker-login#v1.0.0: { username: arikkfir} }"
-    echo "    command: ./.buildkite/build-resource-image.sh k8s-${name} ${TAG}"
+    echo "    command:"
+    echo "      - docker tag kfirz/deployster-k8s:${TAG} kfirz/deployster-k8s-${name}:${TAG}"
+    echo "      - docker push kfirz/deployster-k8s-${name}:${TAG}"
 done
 
 exit 0
