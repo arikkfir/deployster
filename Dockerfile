@@ -1,5 +1,6 @@
 FROM python:3.6.5-alpine3.7 AS build
 ARG CODECOV_TOKEN=""
+ARG BUILDKITE_COMMIT=""
 ENV PYTHONIOENCODING="utf-8"
 ENV PYTHONPATH="/app/src:/app/resources/src"
 ENV PYTHONUNBUFFERED="1"
@@ -23,7 +24,7 @@ RUN py.test --cov-config=/app/.coveragerc \
             --capture=fd \
             -vv \
             /app/tests/
-RUN bash -c '[[ -z "${CODECOV_TOKEN}" || -z "${BUILDKITE_TAG:-$BUILDKITE_COMMIT}" ]] || codecov --commit=${BUILDKITE_TAG:-$BUILDKITE_COMMIT}'
+RUN bash -c '[[ -z "${CODECOV_TOKEN}" || -z "${BUILDKITE_COMMIT}" ]] || codecov --commit=${BUILDKITE_COMMIT}'
 
 FROM python:3.6.5-alpine3.7
 MAINTAINER Arik Kfir <arik@kfirs.com>
