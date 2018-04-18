@@ -1,4 +1,3 @@
-ARG VERSION
-FROM kfirz/deployster-dresource:${VERSION}
+FROM kfirz/deployster-dresource:local
 ENV GOOGLE_APPLICATION_CREDENTIALS=/deployster/service-account.json
 COPY src/gcp.py /deployster/lib/

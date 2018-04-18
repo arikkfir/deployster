@@ -1,0 +1,40 @@
+steps:
+
+  ######################################################################################################################
+  # Build the "dresource" image, which serves as the base image for all our other resource images.
+  ######################################################################################################################
+  - label: kfirz/dresource
+    plugins: { docker-login#v1.0.0: { username: arikkfir} }
+    command: ./.buildkite/build-resource-image.sh dresource ${BUILDKITE_TAG:-$BUILDKITE_COMMIT}
+  - wait
+
+  ######################################################################################################################
+  # Build the "k8s" & "gcp" images, which serve as base images for our GCP & Kubernetes resource images.
+  ######################################################################################################################
+  - label: kfirz/gcp
+    plugins: { docker-login#v1.0.0: { username: arikkfir} }
+    command: ./.buildkite/build-resource-image.sh gcp ${BUILDKITE_TAG:-$BUILDKITE_COMMIT}
+  - label: kfirz/k8s
+    plugins: { docker-login#v1.0.0: { username: arikkfir} }
+    command: ./.buildkite/build-resource-image.sh k8s ${BUILDKITE_TAG:-$BUILDKITE_COMMIT}
+  - wait
+
+  ######################################################################################################################
+  # Build the "deployster" main executable image.
+  # This also runs the unit tests.
+  ######################################################################################################################
+  - label: kfirz/deployster
+    plugins: { docker-login#v1.0.0: { username: arikkfir} }
+    command:
+      - docker build --build-arg BUILDKITE_COMMIT
+                     --build-arg "CODECOV_TOKEN=515ac87b-0f3f-45e2-a46e-20aa32baf273"
+                     --build-arg "VERSION=${BUILDKITE_TAG:-$BUILDKITE_COMMIT}"
+                     -t kfirz/deployster:${BUILDKITE_TAG:-$BUILDKITE_COMMIT}
+                     -f ./Dockerfile .
+      - docker push kfirz/deployster:${BUILDKITE_TAG:-$BUILDKITE_COMMIT}
+
+  ######################################################################################################################
+  # Upload additional pipeline steps which will build all our other images.
+  ######################################################################################################################
+  - label: Augment pipeline
+    command: ./.buildkite/generate-resource-images-pipeline.sh ${BUILDKITE_TAG:-$BUILDKITE_COMMIT} | buildkite-agent pipeline upload
